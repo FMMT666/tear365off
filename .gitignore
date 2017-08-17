@@ -2,4 +2,6 @@
 
 !.gitignore
 
+!tear365off.py
+
 !README.md
