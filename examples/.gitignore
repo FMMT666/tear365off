@@ -1,0 +1,8 @@
+*
+
+!.gitignore
+
+!example1.ini
+!numday.t365
+!textday.t365
+!textmonth.t365
