@@ -32,8 +32,8 @@ def CheckTemplate():
 		none
 	
 	Returns:
-		None:   No error
-		string: string with the error message
+		None:   No error.
+		string: A string containing the error message
 	"""
 	
 	# check number of documents open; we accept only one
@@ -41,17 +41,42 @@ def CheckTemplate():
 	if   numDocs < 1:
 		return "No document opened."
 	elif numDocs > 1:
-		return "More than one document opened."
+		return "More than one document is opened."
 
 	# check number of pages that exist; we accept only one
 	numPages = scribus.pageCount()
 	if   numPages < 1:
 		return "No page created."
 	elif numPages > 1:
-		return "Please delete all pages except page number 1."
+		return "Please reduce the document to a single calendar template page."
 	
+	# check if items exist on this page
+	numItems = len( scribus.getPageItems() )
+	if   numItems < 1:
+		return "This page is empty."
+	
+	# check if at least one object's name starts with the magic "t365_" string
+	magicStrings = 0
+	for item in scribus.getPageItems():
+		if item[0].find( "t365_" ) == 0:
+			magicStrings += 1
+	if magicStrings == 0:
+		return "No object with modification tag 't365_' found."
+		
 	return None
 
+
+
+###################################################################################################
+##
+##
+###################################################################################################
+def CreateNewPage( index ):
+	# interesting:
+	#   getObjectType( <name> ) -> string
+	
+	
+	pass
 
 
 
@@ -61,12 +86,26 @@ def CheckTemplate():
 ###################################################################################################
 def MakeCalendar( argv ):
 	""" Main function to create the calendar from within Scribus.
+	
+	Args:
+		command line
+	
+	Returns:
+		None:   No error.
+		string: A string containing the error message
 	"""
+	
 	# check for errors in the page template
 	err = CheckTemplate()
 	if err != None:
-		pass # TODO: make this visible someway...
+		scribus.messageBox("Template Error", err )
+		return err
 	
+	# load the ini file (and get current path)
+	fileIni = scribus.fileDialog( "Select an ini file", "*.ini" , "")
+	
+	
+	return None
 	
 	
 
@@ -74,9 +113,9 @@ def MakeCalendar( argv ):
 ###################################################################################################
 ###################################################################################################
 if __name__ == '__main__':
-	MakeCalendar( sys.argv )
+	err = MakeCalendar( sys.argv )
 	
 	# just in case...
 	if scribus.haveDoc():
 		scribus.setRedraw( True )
-	
+
