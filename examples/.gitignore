@@ -2,7 +2,7 @@
 
 !.gitignore
 
-!example1.ini
+!example1.sla
 !numday.t365
 !textday.t365
 !textmonth.t365
